@@ -18,7 +18,6 @@ import java.util.List;
 public class Day2 {
     private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day2_input.txt";
 
-    private static List<String> input = new ArrayList<>();
     private int bound2;
     private int bound1;
     private char condition;
@@ -28,7 +27,7 @@ public class Day2 {
         int correctPWDsSleds = 0;
         int correctPWDsToboggan = 0;
 
-        readFile();
+        List<String> input = new ReadFile().readFile(FILEPATH);
 
         for (String s : input) {
             splitLine(s);
@@ -44,6 +43,7 @@ public class Day2 {
         System.out.println("Number of valid TOBOGGAN passwords: " + correctPWDsToboggan);
     }
 
+    //XOR operator
     private boolean checkPasswordToboggan(String password) {
         if ((password.charAt(bound1 - 1) == condition) ^ (password.charAt(bound2 - 1) == condition)) {
             System.out.println("Acceptable Password.\n");
@@ -83,21 +83,5 @@ public class Day2 {
         condition = result[1].charAt(0);
         password = result[2];
         System.out.println("Range: " + bound1 + "-" + bound2 + "\nChar: " + condition + "\nPassword: " + password);
-    }
-
-    private void readFile() {
-        File inputFile = new File(FILEPATH);
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(inputFile));
-            String nextLine;
-            while ((nextLine = br.readLine()) != null) {
-                input.add(nextLine);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found!");
-        } catch (IOException e) {
-            System.out.println("File empty or incompatible.");
-        }
     }
 }
