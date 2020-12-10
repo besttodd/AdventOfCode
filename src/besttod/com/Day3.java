@@ -5,6 +5,7 @@ package besttod.com;
 //                From the starting position, check the position that is right 3 and down 1.
 //                Then, check the position that is right 3 and down 1 from there, and so on until you go past the bottom of the map.
 //Incorrect answers: 81, 64, 247, 63
+//Correct answer: 274
 //       Part 2 - Now, from the same staring position, determine the number of trees you would encounter taking the following slopes:
 //                Right 1, down 1.
 //                Right 3, down 1. (Part 1)
@@ -14,12 +15,12 @@ package besttod.com;
 //
 //                Multiply the total number of trees to get a final answer.
 //Incorrect answers: 1205199104, 5500166400
+//Correct answer: 6050183040
 
 import java.util.List;
 
 public class Day3 {
     private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day3_input.txt";
-
     private List<String> input;
 
     public Day3() {

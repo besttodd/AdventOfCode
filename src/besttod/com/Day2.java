@@ -1,19 +1,19 @@
 package besttod.com;
 
-import java.io.*;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.ArrayList;
 import java.util.List;
 
 //Day 2: Part 1 - Each line gives the password policy and then the password.
 //                The password policy indicates the lowest and highest number of times a given letter must appear for the password to be valid.
 //                For example, 1-3 a: means that the password must contain 'a' at least 1 time and at most 3 times.
+//Correct answer: 477
 //       Part 2 - Each policy actually describes two positions in the password,
 //                where 1 means the first character, 2 means the second character, and so on.
 //                (No concept of "index zero"!)
 //                Exactly one of these positions must contain the given letter.
 //                Other occurrences of the letter are irrelevant for the purposes of policy enforcement.
+//Correct answer: 686
 
 public class Day2 {
     private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day2_input.txt";

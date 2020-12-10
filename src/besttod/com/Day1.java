@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 //Day 1: Part 1 - Find the TWO entries that sum to ANSWER and then multiply those two numbers together.
+//Correct answer: 41979
 //       Part 2 - Find the THREE entries that sum to ANSWER and get the multiplication of these entries?
+//Correct answer: 193416912
 
 
 public class Day1 {
