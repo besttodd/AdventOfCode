@@ -150,7 +150,7 @@ public class Day4 {
             case "cid":
                 return string;
             default:
-                return "ukn";
+                return "?";
         }
     }
 
