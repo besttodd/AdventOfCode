@@ -8,7 +8,8 @@ package besttod.com;
 //Incorrect answers: 44, 89
 //Correct answer: 161
 //       Part 2 - Now, How many individual bags are required inside your single shiny gold bag?
-//Correct answer:
+//Incorrect answers: 203, 1052, 7482 to low 8303, 30900 to high
+//Correct answer: 30899
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -23,77 +24,44 @@ public class Day7 {
     public Day7() {
         List<String> input = new ReadFile().readFile(FILEPATH);
 
-        Queue<String> queue1 = new LinkedList<>(checkRules(input, "shiny gold", false));
-        System.out.println("=========================================================================================");
+        Queue<String> queue1 = new LinkedList<>(checkRules(input, "shiny gold"));
+        containShinyGold.addAll(queue1);
+        System.out.println(queue1);
 
         while (!queue1.isEmpty()) {
             String next = queue1.poll();
-            for (String s : input) {
-                if (s.contains(next)) {
-                    List<String> bagInfo = extractBags(s, next, false);
-                    String bag = bagInfo.get(0) + " " + bagInfo.get(1);
-                    if (!bag.equals(next)) {
-                        queue1.add(bag);
-                        containShinyGold.add(bag);
-                        System.out.println("Queue: " + queue1.size() + "::" + queue1);
-                    }
-                }
-            }
+            queue1.addAll(checkRules(input, next));
+            containShinyGold.addAll(queue1);
         }
-        System.out.println("\nNumber of colors to hold a 'Shiny Gold Bag': " + containShinyGold.size() + "========================================");
+        System.out.println("\nNumber of colors to hold a 'Shiny Gold Bag': " + containShinyGold.size());
         containShinyGold.clear();
+        System.out.println("=========================================================================================");
 
-        Queue<String> queue2 = new LinkedList<>(checkRules(input, "shiny gold", true));
-
-        while (!queue2.isEmpty()) {
-            String next = queue2.poll();
-            for (String s : input) {
-                if (s.contains(next)) {
-                    List<String> bagInfo = extractBags(s, next, false);
-                    String bag = bagInfo.get(0) + " " + bagInfo.get(1);
-                    if (!bag.equals(next)) {
-                        queue2.add(bag);
-                        containShinyGold.add(bag);
-                    }
-                }
-            }
+        List<Bag> allBags = new ArrayList<>();
+        for (String s : input) {
+            allBags.add(new Bag(s));
         }
 
-        System.out.println("\nNumber of bags inside a 'Shiny Gold Bag': " + containShinyGold.size());
+        for (Bag bag : allBags) {
+            if (bag.getColor().equals("shiny gold")) {
+                System.out.println("\nNumber of bags inside a 'Shiny Gold Bag': " + (bag.containsNumOfBags(allBags) - 1));
+                break;
+            }
+        }
     }
 
-    private Queue<String> checkRules(List<String> input, String search, boolean inside) {
+    private Queue<String> checkRules(List<String> input, String search) {
         Queue<String> queue1 = new LinkedList<>();
         for (String s : input) {
             if (s.contains(search)) {
-                List<String> bagInfo = extractBags(s, search, inside);
+                List<String> bagInfo = parse(s);
                 String bag = bagInfo.get(0) + " " + bagInfo.get(1);
                 if (!bag.equals(search)) {
-                    containShinyGold.add(bag);
                     queue1.add(bag);
                 }
             }
         }
         return queue1;
-    }
-
-    private List<String> extractBags(String s, String search, boolean inside) {
-        List<String> bagNContents = parse(s);
-        List<String> contents = new ArrayList<>();
-        int index = bagNContents.indexOf("contain") + 2; //start of outer bags contents, ignoring the number
-        if (!(bagNContents.get(0) + bagNContents.get(1)).equals(search)) {
-            for (int i = index; i < bagNContents.size(); i = i + 4) {
-                String singleBag = bagNContents.get(i) + " " + bagNContents.get(i + 1);
-                contents.add(singleBag);
-            }
-        }
-        System.out.println(bagNContents);
-        System.out.println(contents + "===================================");
-        if (inside) {
-            return contents;
-        } else {
-            return bagNContents;
-        }
     }
 
     private List<String> parse(String toParse) {
