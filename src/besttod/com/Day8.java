@@ -21,26 +21,21 @@ import java.util.*;
 public class Day8 {
     private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day8_input.txt";
 
-    private boolean[] repeat;
-    int lineNum = 0;
-    List<Integer> possibleErrors = new ArrayList<>();
+    private List<Integer> possibleErrors = new ArrayList<>();
 
     public Day8() {
         List<String> input = new ReadFile().readFile(FILEPATH);
-        repeat = new boolean[input.size()];
-        Arrays.fill(repeat, false);
-        possibleErrors.add(0);
-        List<Integer> changes = new ArrayList<>();
-        int count = 0;
 
         List<Instruction> bootCode = new ArrayList<>();
         for (String line : input) {
             bootCode.add(new Instruction(line));
         }
 
+        List<Integer> changes = new ArrayList<>();
         changes.add(0);
         possibleErrors.add(0);
         int lastChange = 0;
+        int count = 0;
 
         while (checkForLoop(bootCode)) {
             if (count > 0) {
@@ -71,14 +66,15 @@ public class Day8 {
                     changes.add(lastChange);
                     break;
             }
-            Arrays.fill(repeat, false);
-            lineNum = 0;
             count++;
         }
     }
 
     private boolean checkForLoop(List<Instruction> code) {
         int accumulator = 0;
+        int lineNum = 0;
+        boolean[] repeat = new boolean[code.size()];
+        Arrays.fill(repeat, false);
         try {
             while (!repeat[lineNum]) {
                 repeat[lineNum] = true;
