@@ -12,6 +12,8 @@ package besttod.com;
 //                By changing exactly one jmp or nop, you can repair the boot code and make it terminate correctly.
 //                Fix the program so that it terminates normally by changing exactly one jmp (to nop) or nop (to jmp).
 //                What is the value of the accumulator after the program terminates?
+//Incorrect answers: 645
+//Correct answer: 1260
 
 
 import java.util.*;
@@ -20,44 +22,91 @@ public class Day8 {
     private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day8_input.txt";
 
     private boolean[] repeat;
+    int lineNum = 0;
+    List<Integer> possibleErrors = new ArrayList<>();
 
     public Day8() {
         List<String> input = new ReadFile().readFile(FILEPATH);
         repeat = new boolean[input.size()];
         Arrays.fill(repeat, false);
-
-        int lineNum = 0;
-        int accumulator = 0;
+        possibleErrors.add(0);
+        List<Integer> changes = new ArrayList<>();
+        int count = 0;
 
         List<Instruction> bootCode = new ArrayList<>();
         for (String line : input) {
             bootCode.add(new Instruction(line));
         }
 
-        while (!checkForInfinite(lineNum)) {
-            repeat[lineNum] = true;
-            switch (bootCode.get(lineNum).getOperation()) {
+        changes.add(0);
+        possibleErrors.add(0);
+        int lastChange = 0;
+
+        while (checkForLoop(bootCode)) {
+            if (count > 0) {
+                bootCode.get(lastChange).swapOperation();
+            } else {
+                possibleErrors.remove(0);
+            }
+
+            for (int i : changes) {
+                if (possibleErrors.contains(i)) {
+                    possibleErrors.remove((Integer) i);
+                }
+            }
+
+            lastChange = possibleErrors.get(0);
+
+            switch (bootCode.get(lastChange).getOperation()) {
                 case "nop":
-                    //System.out.println("No Operation.");
-                    break;
-                case "acc":
-                    accumulator += bootCode.get(lineNum).getArgument();
-                    //System.out.println("Accumulator adjusted: "+accumulator);
+                    bootCode.get(lastChange).swapOperation();
+                    System.out.println("\nNOP CHANGED at line: " + lastChange + "=====================================================");
+                    possibleErrors.remove(0);
+                    changes.add(lastChange);
                     break;
                 case "jmp":
-                    lineNum += bootCode.get(lineNum).getArgument() - 1;
-                    //System.out.println("Jump to line#: "+lineNum);
+                    bootCode.get(lastChange).swapOperation();
+                    System.out.println("\nJMP CHANGED  at line: " + lastChange + "======================================================\n");
+                    possibleErrors.remove(0);
+                    changes.add(lastChange);
                     break;
-                default:
-                    System.out.println("Error: Unknown operation.");
             }
-            lineNum++;
+            Arrays.fill(repeat, false);
+            lineNum = 0;
+            count++;
         }
-
-        System.out.println("\nInfinite loop in Boot Code.\nAccumulator: " + accumulator + " Line: " + lineNum);
     }
 
-    private boolean checkForInfinite(int lineNum) {
-        return repeat[lineNum];
+    private boolean checkForLoop(List<Instruction> code) {
+        int accumulator = 0;
+        try {
+            while (!repeat[lineNum]) {
+                repeat[lineNum] = true;
+                switch (code.get(lineNum).getOperation()) {
+                    case "nop":
+                        possibleErrors.add(lineNum);
+                        System.out.println("Line: " + lineNum + " No Operation.");
+                        break;
+                    case "acc":
+                        accumulator += code.get(lineNum).getArgument();
+                        System.out.println("Line: " + lineNum + " Accumulator adjusted: " + accumulator);
+                        break;
+                    case "jmp":
+                        int prev = lineNum;
+                        possibleErrors.add(lineNum);
+                        lineNum += code.get(lineNum).getArgument() - 1;
+                        System.out.println("Line: " + prev + " Jump to line#: " + (lineNum + 1));
+                        break;
+                    default:
+                        System.out.println("Error: Unknown operation.");
+                }
+                lineNum++;
+            }
+            System.out.println("\nInfinite loop in Boot Code.\nAccumulator: " + accumulator + " Line: " + lineNum);
+            return true;
+        } catch (Exception e) {
+            System.out.println("\nBoot Code executed successfully.\nAccumulator: " + accumulator);
+            return false;
+        }
     }
 }

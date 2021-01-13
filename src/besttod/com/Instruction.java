@@ -14,10 +14,10 @@ public class Instruction {
     private int argument;
 
     public Instruction(String input) {
-        List<String> line = parse(input);
-        operation = line.get(0);
-        String number = line.get(2) + line.get(1);
-        argument = Integer.parseInt(number);
+        List<String> line = parse(input);              //nop +2
+        operation = line.get(0);                       //nop
+        String value = line.get(2) + line.get(1);      //"+2"
+        argument = Integer.parseInt(value);            //"2"
     }
 
     private List<String> parse(String toParse) {
@@ -38,5 +38,13 @@ public class Instruction {
 
     public int getArgument() {
         return argument;
+    }
+
+    public void swapOperation() {
+        if (operation.equals("jmp")) {
+            operation = "nop";
+        } else {
+            operation = "jmp";
+        }
     }
 }
