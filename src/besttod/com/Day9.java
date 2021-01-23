@@ -6,11 +6,17 @@ package besttod.com;
 //                Suppose the 26th number is 45, and the first number (no longer an option, as it is more than 25 numbers ago) was 20.
 //                Now, for the next number to be valid, there needs to be some pair of numbers among 1-19, 21-25, or 45 that add up to it.
 //                Find the first number in the list (after the preamble) which is not the sum of two of the 25 numbers before it.
-//Incorrect answers: 35,
+//Incorrect answers: 35
 //Correct answer: 27911108
+//       Part 2 - Now find a contiguous set of at least two numbers in your list which sum to the invalid number from step 1.
+//                Find the encryption weakness by adding together the smallest and largest number in this contiguous range;
+//Incorrect answers: 2945691
+//Correct answer: 4023754
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Day9 {
     private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day9_input.txt";
@@ -30,7 +36,13 @@ public class Day9 {
             }
             //System.out.println(newInput);
             if (!increment(newInput, current)) {
-                System.out.println("Invalid number: " + input.get(next));
+                System.out.println("\nInvalid number: " + input.get(next) + "\n");
+                //DO PART 2
+                newInput.clear();
+                for (int i = 0; i < next; i++) {
+                    newInput.add(Integer.parseInt(input.get(i)));
+                }
+                findEncryptionWeakness(newInput, current);
                 break;
             }
             newInput.clear();
@@ -51,5 +63,41 @@ public class Day9 {
             }
         }
         return false;
+    }
+
+    private void findEncryptionWeakness(List<Integer> list, int current) {
+        double total;
+        List<Integer> sum = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            sum.add(list.get(i));
+            for (int j = i + 1; j < list.size(); j++) {
+                sum.add(list.get(j));
+                total = sum.stream().reduce(0, Integer::sum);
+                while (total > current) {
+                    sum.remove(0);
+                    total = sum.stream().reduce(0, Integer::sum);
+                }
+                if (total == current) {
+                    System.out.println(sum + ">>>>>>>>>>>>>>>>>>>>>TRUE");
+                    int encryptWeakness = IntStream.of(lowestHighest(sum)).sum();
+                    System.out.println("\nEncryption Weakness: " + encryptWeakness + ".");
+                    return;
+                }
+                //System.out.println(sum + ">>>>>>>>>>>>>>>>>>>>>FALSE"+ total);
+            }
+        }
+    }
+
+    private int[] lowestHighest(List<Integer> list) {
+        int[] lowHigh = new int[]{9999999, 0};
+        for (Integer integer : list) {
+            if (integer < lowHigh[0]) {
+                lowHigh[0] = integer;
+            }
+            if (integer > lowHigh[1]) {
+                lowHigh[1] = integer;
+            }
+        }
+        return lowHigh;
     }
 }
