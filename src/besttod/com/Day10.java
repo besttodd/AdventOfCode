@@ -77,7 +77,6 @@ public class Day10 {
             final long z = j >= 1 ? sums[j - 1] : 0;
             sums[j] = x + y + z;
         }
-
         return sums[sums.length - 1];
     }
 

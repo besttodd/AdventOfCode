@@ -37,12 +37,12 @@ public class Day7 {
         containShinyGold.clear();
         System.out.println("=========================================================================================");
 
-        List<Bag> allBags = new ArrayList<>();
+        List<Bag_Day7> allBags = new ArrayList<>();
         for (String s : input) {
-            allBags.add(new Bag(s));
+            allBags.add(new Bag_Day7(s));
         }
 
-        for (Bag bag : allBags) {
+        for (Bag_Day7 bag : allBags) {
             if (bag.getColor().equals("shiny gold")) {
                 System.out.println("\nNumber of bags inside a 'Shiny Gold Bag': " + (bag.containsNumOfBags(allBags) - 1));
                 break;

@@ -4,13 +4,13 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Bag {
+public class Bag_Day7 {
     private static final Pattern VALID_PATTERN = Pattern.compile("[a-z]+|[0-9]+");
 
     private String color;
     private Map<String, Integer> contents = new HashMap<>();
 
-    public Bag(String rule) {
+    public Bag_Day7(String rule) {
         List<String> bagNContents = parse(rule);
         color = bagNContents.get(0) + " " + bagNContents.get(1);
         extractContents(rule, color);
@@ -42,8 +42,8 @@ public class Bag {
         return color;
     }
 
-    private Bag findBag(List<Bag> allBags, String color) {
-        for (Bag bag : allBags) {
+    private Bag_Day7 findBag(List<Bag_Day7> allBags, String color) {
+        for (Bag_Day7 bag : allBags) {
             if (bag.getColor().equals(color)) {
                 return bag;
             }
@@ -51,10 +51,10 @@ public class Bag {
         return null;
     }
 
-    public long containsNumOfBags(List<Bag> allBags) {
+    public long containsNumOfBags(List<Bag_Day7> allBags) {
         long numBags = 1;
         for (Map.Entry<String, Integer> bag : contents.entrySet()) {
-            Bag foundBag = findBag(allBags, bag.getKey());
+            Bag_Day7 foundBag = findBag(allBags, bag.getKey());
             assert foundBag != null;
             numBags += bag.getValue() * foundBag.containsNumOfBags(allBags);
         }
