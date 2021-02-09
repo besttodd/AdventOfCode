@@ -15,13 +15,21 @@ package besttod.com;
 //                 no seats to change state! Once people stop moving around, count the occupied seats.
 //Correct answer: 2316
 //
-//         Part 2:
+//         Part 2: Now, instead of considering just the eight immediately adjacent seats, consider the first seat in each of those
+//                 eight directions. It also now takes five or more visible occupied seats for an occupied seat to become empty
+//                 (rather than four or more from the previous rules). The other rules still apply: empty seats that see no occupied
+//                 seats become occupied, seats matching no rule don't change, and floor never changes. Given the new visibility
+//                 method and the rule change for occupied seats becoming empty, once equilibrium is reached, how many seats end
+//                 up occupied?
+//Correct answer: 2128
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Day11 {
-    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day11_test.txt";
+    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day11_input.txt";
+    private final static String PART1 = "adjacent";
+    private final static String PART2 = "visible";
 
     public Day11() {
         List<String> input = new ReadFile().readFile(FILEPATH);
@@ -36,7 +44,7 @@ public class Day11 {
 
         layout.showLayout();
         while (!stable) {
-            newLayout = newRound(previousLayout);
+            newLayout = newRound(previousLayout, PART2);
             if (Arrays.deepToString(newLayout.getLayout()).equals(Arrays.deepToString(previousLayout.getLayout()))) {
                 stable = true;
             } else {
@@ -48,7 +56,7 @@ public class Day11 {
         System.out.println(previousLayout.getOccupiedSeats() + " occupied seats");
     }
 
-    private SeatLayout newRound(SeatLayout layout) {
+    private SeatLayout newRound(SeatLayout layout, String pref) {
         char[][] grid = layout.getLayout();
         char[][] newGrid = new char[grid.length][grid[0].length];
         String[] temp = new String[grid.length];
@@ -57,7 +65,7 @@ public class Day11 {
             for (int j = 0; j < grid[i].length; j++) {
                 switch (grid[i][j]) {
                     case 'L':
-                        if (layout.countAdjacent(i, j) == 0) {
+                        if (layout.countOccupied(i, j, pref) == 0) {
                             newGrid[i][j] = '#';
                             layout.seatOccupied();
                         } else {
@@ -65,7 +73,7 @@ public class Day11 {
                         }
                         break;
                     case '#':
-                        if (layout.countAdjacent(i, j) >= 4) {
+                        if (layout.countOccupied(i, j, pref) >= 5) {
                             newGrid[i][j] = 'L';
                         } else {
                             newGrid[i][j] = '#';

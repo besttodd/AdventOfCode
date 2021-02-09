@@ -1,11 +1,9 @@
 package besttod.com;
 
-import java.util.Arrays;
-
 public class SeatLayout {
     private final static int[][] OFFSETS = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
-    private char[][] layout;
+    private final char[][] layout;
     private int occupiedSeats;
 
     public SeatLayout(String[] input) {
@@ -24,26 +22,6 @@ public class SeatLayout {
 
     public char[][] getLayout() {
         return layout;
-    }
-
-    public String getRow(int row) {
-        return Arrays.toString(layout[row]);
-    }
-
-    public String getColumn(int column) {
-        StringBuilder seatColumn = new StringBuilder();
-        for (char[] chars : layout) {
-            seatColumn.append(chars[column]);
-        }
-        return seatColumn.toString();
-    }
-
-    public char getSeat(int x, int y) {
-        return layout[x][y];
-    }
-
-    public void setSeat(int x, int y, char c) {
-        layout[x][y] = c;
     }
 
     public void showLayout() {
@@ -72,6 +50,44 @@ public class SeatLayout {
             if (layout[row][col] == '#') {
                 count++;
             }
+        }
+        return count;
+    }
+
+    public int countVisible(int x, int y) {
+        int count = 0;
+        for (int[] offset : OFFSETS) {
+            int row = x;
+            int col = y;
+            while (true) {
+                row += offset[0];
+                col += offset[1];
+                if (row < 0 || row >= layout.length || col < 0 || col >= layout[x].length) {
+                    break;
+                }
+                if (layout[row][col] == 'L') {
+                    break;
+                }
+                if (layout[row][col] == '#') {
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int countOccupied(int x, int y, String pref) {
+        int count = 0;
+        switch (pref) {
+            case "adjacent":
+                count = countAdjacent(x, y);
+                break;
+            case "visible":
+                count = countVisible(x, y);
+                break;
+            default:
+                System.out.println("Invalid preference.");
         }
         return count;
     }
