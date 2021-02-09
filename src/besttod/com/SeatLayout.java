@@ -3,6 +3,8 @@ package besttod.com;
 import java.util.Arrays;
 
 public class SeatLayout {
+    private final static int[][] OFFSETS = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+
     private char[][] layout;
     private int occupiedSeats;
 
@@ -51,150 +53,26 @@ public class SeatLayout {
         System.out.println("-----------------------------------------------------------------------------------------");
     }
 
-    private int checkPrevious(int x, int y, int z) {
-        int count = 0;
-        for (int c = y - z; c <= y + z; c++) {
-            if (layout[x - z][c] == '#') {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private int checkNext(int x, int y, int z) {
-        int count = 0;
-        for (int c = y - z; c <= y + z; c++) {
-            if (layout[x + z][c] == '#') {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private int checkLeftRight(int x, int y, int z) {
-        int count = 0;
-        if (layout[x][y - z] == '#') {
-            count++;
-        }
-        if (layout[x][y + z] == '#') {
-            count++;
-        }
-        return count;
-    }
-
-    private int checkEdges(int x, int y, int z) {
-        int count = 0;
-        int maxX = layout.length - 1;
-        int maxY = layout[0].length - 1;
-        if ((x == 0 && (y == 0 || y == maxY)) || (x == maxX && (y == 0 || y == maxY))) {
-            count += checkCorners(x, y, z);
-        } else if (x == 0) {
-            count += checkNext(x, y, z);
-            count += checkLeftRight(x, y, z);
-        } else if (y == 0) {
-            if (layout[x - z][y] == '#') {
-                count++;
-            }
-            if (layout[x - z][y + z] == '#') {
-                count++;
-            }
-            if (layout[x][y + z] == '#') {
-                count++;
-            }
-            if (layout[x + z][y] == '#') {
-                count++;
-            }
-            if (layout[x + z][y + z] == '#') {
-                count++;
-            }
-        } else if (x == layout.length - 1) {
-            count += checkPrevious(x, y, z);
-            count += checkLeftRight(x, y, z);
-        } else if (y == layout[x].length - 1) {
-            if (layout[x - z][y] == '#') {
-                count++;
-            }
-            if (layout[x - z][y - z] == '#') {
-                count++;
-            }
-            if (layout[x][y - z] == '#') {
-                count++;
-            }
-            if (layout[x + z][y] == '#') {
-                count++;
-            }
-            if (layout[x + z][y - z] == '#') {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private int checkCorners(int x, int y, int z) {
-        int count = 0;
-        if (x == 0 && y == 0) {
-            if (layout[x][y + z] == '#') {
-                count++;
-            }
-            if (layout[x + z][y] == '#') {
-                count++;
-            }
-            if (layout[x + z][y + z] == '#') {
-                count++;
-            }
-        } else if (x == 0 && y == layout[x].length) {
-            if (layout[x][y - z] == '#') {
-                count++;
-            }
-            if (layout[x + z][y] == '#') {
-                count++;
-            }
-            if (layout[x + z][y - z] == '#') {
-                count++;
-            }
-        } else if (x == layout.length - 1 && y == 0) {
-            if (layout[x][y + z] == '#') {
-                count++;
-            }
-            if (layout[x - z][y] == '#') {
-                count++;
-            }
-            if (layout[x - z][y + z] == '#') {
-                count++;
-            }
-        } else if (x == layout.length - 1 && y == layout[x].length - 1) {
-            if (layout[x][y - z] == '#') {
-                count++;
-            }
-            if (layout[x - z][y] == '#') {
-                count++;
-            }
-            if (layout[x - z][y - z] == '#') {
-                count++;
-            }
-        }
-        return count;
-    }
-
-
-    //returns number of occupied seats adjacent to seat x,y
-    public int checkSurrounds(int x, int y, int z) {
-        int count = 0;
-        if (x == 0 | y == 0 | x == layout.length - 1 | y == layout[x].length - 1) {
-            count += checkEdges(x, y, z);
-        } else {
-            count += checkPrevious(x, y, z);
-            count += checkNext(x, y, z);
-            count += checkLeftRight(x, y, z);
-        }
-        return count;
-    }
-
     public void seatOccupied() {
         occupiedSeats++;
     }
 
     public int getOccupiedSeats() {
         return occupiedSeats;
+    }
+
+    public int countAdjacent(int x, int y) {
+        int count = 0;
+        for (int[] offset : OFFSETS) {
+            int row = x + offset[0];
+            int col = y + offset[1];
+            if (row < 0 || row >= layout.length || col < 0 || col >= layout[x].length) {
+                continue;
+            }
+            if (layout[row][col] == '#') {
+                count++;
+            }
+        }
+        return count;
     }
 }

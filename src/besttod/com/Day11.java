@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Day11 {
-    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day11_input.txt";
+    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day11_test.txt";
 
     public Day11() {
         List<String> input = new ReadFile().readFile(FILEPATH);
@@ -52,12 +52,12 @@ public class Day11 {
         char[][] grid = layout.getLayout();
         char[][] newGrid = new char[grid.length][grid[0].length];
         String[] temp = new String[grid.length];
-        StringBuilder temp2 = new StringBuilder("");
+        StringBuilder temp2 = new StringBuilder();
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 switch (grid[i][j]) {
                     case 'L':
-                        if (layout.checkSurrounds(i, j, 1) == 0) {
+                        if (layout.countAdjacent(i, j) == 0) {
                             newGrid[i][j] = '#';
                             layout.seatOccupied();
                         } else {
@@ -65,7 +65,7 @@ public class Day11 {
                         }
                         break;
                     case '#':
-                        if (layout.checkSurrounds(i, j, 1) >= 4) {
+                        if (layout.countAdjacent(i, j) >= 4) {
                             newGrid[i][j] = 'L';
                         } else {
                             newGrid[i][j] = '#';
