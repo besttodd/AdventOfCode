@@ -23,10 +23,12 @@ public class Day1 {
         readFile();
 
         if (find2Entries(input)) {
+            System.out.println("Part 1:");
             System.out.println(entryA + " + " + entryB + " = " + ANSWER);
             System.out.println("So:\n" + entryA + " * " + entryB + " = " + entryA * entryB + "\n");
         }
         if (find3Entries(input)) {
+            System.out.println("Part 2:");
             System.out.println(entryA + " + " + entryB + " + " + entryC + " = " + ANSWER);
             System.out.println("So:\n" + entryA + " * " + entryB + " * " + entryC + " = " + entryA * entryB * entryC);
         } else {

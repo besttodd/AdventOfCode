@@ -36,9 +36,9 @@ public class Day11 {
         String[] stringInput = new String[input.size()];
         input.toArray(input.toArray(stringInput));
 
-        SeatLayout layout = new SeatLayout(stringInput);
-        SeatLayout newLayout;
-        SeatLayout previousLayout = layout;
+        SeatLayout_Day11 layout = new SeatLayout_Day11(stringInput);
+        SeatLayout_Day11 newLayout;
+        SeatLayout_Day11 previousLayout = layout;
         boolean stable = false;
         int count = 0;
 
@@ -56,7 +56,7 @@ public class Day11 {
         System.out.println(previousLayout.getOccupiedSeats() + " occupied seats");
     }
 
-    private SeatLayout newRound(SeatLayout layout, String pref) {
+    private SeatLayout_Day11 newRound(SeatLayout_Day11 layout, String pref) {
         char[][] grid = layout.getLayout();
         char[][] newGrid = new char[grid.length][grid[0].length];
         String[] temp = new String[grid.length];
@@ -90,9 +90,9 @@ public class Day11 {
             }
             temp[i] = temp2.toString();
             temp2.setLength(0);
-            System.out.println(temp[i] + "  ==");
+            System.out.println(temp[i]);
         }
         System.out.println("?????????????????????????????????????????????????????????????????????????????????????????");
-        return new SeatLayout(temp);
+        return new SeatLayout_Day11(temp);
     }
 }

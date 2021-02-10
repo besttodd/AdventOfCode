@@ -1,12 +1,12 @@
 package besttod.com;
 
-public class SeatLayout {
+public class SeatLayout_Day11 {
     private final static int[][] OFFSETS = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
     private final char[][] layout;
     private int occupiedSeats;
 
-    public SeatLayout(String[] input) {
+    public SeatLayout_Day11(String[] input) {
         occupiedSeats = 0;
         layout = new char[input.length][input[0].length()];
         setLayout(input);
