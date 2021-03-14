@@ -74,7 +74,7 @@ public class Day13 {
                 //System.out.println(time + "===============================");
             }
         }
-        System.out.println("The earliest timestamp, matching the conditions is: " + time);
+        System.out.println("The earliest timestamp, matching the condition is: " + time);
     }
 
     private int findNextBus(List<Integer> busIDs, int timestamp) {
