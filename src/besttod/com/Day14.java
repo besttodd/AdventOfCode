@@ -29,15 +29,23 @@ package besttod.com;
 //
 //                 What is the sum of all values left in memory after the initialization program completes?
 //Correct answer: 13496669152158
-//         Part 2:
+//
+//         Part 2: A version 2 decoder chip doesn't modify the values being written at all. Instead, it acts as a memory address
+//                 decoder. Immediately before a value is written to memory, each bit in the bitmask modifies the corresponding bit of
+//                 the destination memory address in the following way:
+//                     If the bitmask bit is 0, the corresponding memory address bit is unchanged.
+//                     If the bitmask bit is 1, the corresponding memory address bit is overwritten with 1.
+//                     If the bitmask bit is X, the corresponding memory address bit is floating.
+//                 A floating bit is not connected to anything and instead fluctuates unpredictably. In practice, this means the floating
+//                 bits will take on all possible values, potentially causing many memory addresses to be written all at once!
+//
+//                 What is the sum of all values left in memory after it completes?
 //Correct answer:
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Day14 {
-    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day14_input.txt";
+    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day14_test.txt";
 
     public Day14() {
         List<String> input = new ReadFile().readFile(FILEPATH);
@@ -56,8 +64,83 @@ public class Day14 {
             }
         }
 
-        System.out.println("The sum of all values in memory: " + memory.values().stream().mapToLong(l -> l).sum());
+        System.out.println("\nThe sum of all values in memory: " + memory.values().stream().mapToLong(l -> l).sum());
 
+        System.out.println("\n========\nPart 2\n========");
+
+        memory.clear();
+
+        for (String s : input) {
+            if (s.startsWith("mask")) {
+                mask = s.substring(7);
+                System.out.println("mk = " + mask);
+            } else {
+                int memoryIndex = Integer.parseInt(s.substring(s.indexOf("[") + 1, s.indexOf("]")));
+                int[] memAddresses = getDecodedAddresses(memoryIndex, mask);
+                for (int memAddress : memAddresses) {
+                    memory.put(memAddress, (long) getMemoryValue(s));
+                    System.out.println(memory);
+                }
+            }
+        }
+
+        System.out.println("\nThe sum of all values in memory: " + memory.values().stream().mapToLong(l -> l).sum());
+    }
+
+    private int[] getDecodedAddresses(int index, String mask) {
+        String binaryIndex = binaryValue(index);
+        StringBuilder tempResult = new StringBuilder();
+        List<Integer> xIndexes = new ArrayList<>();
+        //Add the mask to the address
+        for (int i = 0; i < mask.length(); i++) {
+            switch (mask.charAt(i)) {
+                case 'X':
+                    tempResult.append('X');
+                    xIndexes.add(i);
+                    break;
+                case '1':
+                    tempResult.append('1');
+                    break;
+                case '0':
+                    tempResult.append(binaryIndex.charAt(i));
+                    break;
+            }
+        }
+        String result = tempResult.toString();
+        System.out.println("==== " + tempResult);
+
+        //Get the variations for X's
+        int[] indexes = new int[(int) Math.pow(2, numXs(result))];
+        int count = 0;
+        System.out.println(Math.pow(2, numXs(result)));
+        while (count < Math.pow(2, numXs(result))) {
+            indexes[count] = nextVariation(result.toCharArray(), count, xIndexes);
+            count++;
+        }
+        return indexes;
+    }
+
+    private int nextVariation(char[] binaryIndex, int iteration, List<Integer> xIndexes) {
+        String variableBits = binaryValue(iteration);
+        variableBits = variableBits.substring(variableBits.length() - xIndexes.size());
+        char[] tempBits = variableBits.toCharArray();
+        Iterator<Integer> indexIt = xIndexes.iterator();
+        for (char tempBit : tempBits) {
+            binaryIndex[indexIt.next()] = tempBit;
+        }
+        System.out.println(binaryIndex);
+        return (int) Long.parseLong(new String(binaryIndex), 2);
+    }
+
+    private int numXs(String mask) {
+        int count = 0;
+        for (int i = 0; i < mask.length(); i++) {
+            if (mask.charAt(i) == 'X') {
+                count++;
+            }
+        }
+        System.out.println("Num of X's: " + count);
+        return count;
     }
 
     private long addMask(String mask, String value) {
@@ -80,17 +163,5 @@ public class Day14 {
     private int getMemoryValue(String s) {
         String[] split = s.split(" ");
         return Integer.parseInt(split[split.length - 1]);
-    }
-
-    private Map<Integer, Integer> getMask(String s) {
-        Map<Integer, Integer> maskIndex = new HashMap<>();
-        String fullMask = s.substring(7);
-        for (int i = 0; i < fullMask.length(); i++) {
-            if (fullMask.charAt(i) != 'X') {
-                maskIndex.put(i, Integer.parseInt(String.valueOf(fullMask.charAt(i))));
-            }
-        }
-        System.out.println(maskIndex);
-        return maskIndex;
     }
 }

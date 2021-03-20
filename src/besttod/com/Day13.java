@@ -34,7 +34,6 @@ package besttod.com;
 //Correct answer: 538703333547789
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Day13 {
