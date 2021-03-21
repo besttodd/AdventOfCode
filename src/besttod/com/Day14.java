@@ -40,17 +40,17 @@ package besttod.com;
 //                 bits will take on all possible values, potentially causing many memory addresses to be written all at once!
 //
 //                 What is the sum of all values left in memory after it completes?
-//Correct answer:
+//Correct answer: 3278997609887
 
 import java.util.*;
 
 public class Day14 {
-    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day14_test.txt";
+    private final static String FILEPATH = "C:\\Users\\bestt\\Coding\\AdventOfCode\\day14_input.txt";
 
     public Day14() {
         List<String> input = new ReadFile().readFile(FILEPATH);
 
-        Map<Integer, Long> memory = new HashMap<>();
+        Map<Long, Long> memory = new HashMap<>();
         String mask = "";
 
         for (String s : input) {
@@ -58,7 +58,7 @@ public class Day14 {
                 mask = s.substring(7);
                 System.out.println("mask = " + mask);
             } else {
-                int memoryIndex = Integer.parseInt(s.substring(s.indexOf("[") + 1, s.indexOf("]")));
+                long memoryIndex = Integer.parseInt(s.substring(s.indexOf("[") + 1, s.indexOf("]")));
                 memory.put(memoryIndex, addMask(mask, binaryValue(getMemoryValue(s))));
                 System.out.println(memory);
             }
@@ -76,18 +76,16 @@ public class Day14 {
                 System.out.println("mk = " + mask);
             } else {
                 int memoryIndex = Integer.parseInt(s.substring(s.indexOf("[") + 1, s.indexOf("]")));
-                int[] memAddresses = getDecodedAddresses(memoryIndex, mask);
-                for (int memAddress : memAddresses) {
+                long[] memAddresses = getDecodedAddresses(memoryIndex, mask);
+                for (long memAddress : memAddresses) {
                     memory.put(memAddress, (long) getMemoryValue(s));
-                    System.out.println(memory);
                 }
             }
         }
-
         System.out.println("\nThe sum of all values in memory: " + memory.values().stream().mapToLong(l -> l).sum());
     }
 
-    private int[] getDecodedAddresses(int index, String mask) {
+    private long[] getDecodedAddresses(int index, String mask) {
         String binaryIndex = binaryValue(index);
         StringBuilder tempResult = new StringBuilder();
         List<Integer> xIndexes = new ArrayList<>();
@@ -107,10 +105,9 @@ public class Day14 {
             }
         }
         String result = tempResult.toString();
-        System.out.println("==== " + tempResult);
 
         //Get the variations for X's
-        int[] indexes = new int[(int) Math.pow(2, numXs(result))];
+        long[] indexes = new long[(int) Math.pow(2, numXs(result))];
         int count = 0;
         System.out.println(Math.pow(2, numXs(result)));
         while (count < Math.pow(2, numXs(result))) {
@@ -120,7 +117,7 @@ public class Day14 {
         return indexes;
     }
 
-    private int nextVariation(char[] binaryIndex, int iteration, List<Integer> xIndexes) {
+    private long nextVariation(char[] binaryIndex, int iteration, List<Integer> xIndexes) {
         String variableBits = binaryValue(iteration);
         variableBits = variableBits.substring(variableBits.length() - xIndexes.size());
         char[] tempBits = variableBits.toCharArray();
@@ -129,7 +126,7 @@ public class Day14 {
             binaryIndex[indexIt.next()] = tempBit;
         }
         System.out.println(binaryIndex);
-        return (int) Long.parseLong(new String(binaryIndex), 2);
+        return Long.parseLong(new String(binaryIndex), 2);
     }
 
     private int numXs(String mask) {
