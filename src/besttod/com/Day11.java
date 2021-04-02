@@ -36,13 +36,13 @@ public class Day11 {
         String[] stringInput = new String[input.size()];
         input.toArray(input.toArray(stringInput));
 
-        SeatLayout_Day11 layout = new SeatLayout_Day11(stringInput);
-        SeatLayout_Day11 newLayout;
-        SeatLayout_Day11 previousLayout = layout;
+        SeatLayout layout = new SeatLayout(stringInput);
+        SeatLayout newLayout;
+        SeatLayout previousLayout = layout;
         boolean stable = false;
         int count = 0;
 
-        layout.showLayout();
+        //layout.showLayout();
         while (!stable) {
             newLayout = newRound(previousLayout, PART2);
             if (Arrays.deepToString(newLayout.getLayout()).equals(Arrays.deepToString(previousLayout.getLayout()))) {
@@ -56,7 +56,7 @@ public class Day11 {
         System.out.println(previousLayout.getOccupiedSeats() + " occupied seats");
     }
 
-    private SeatLayout_Day11 newRound(SeatLayout_Day11 layout, String pref) {
+    private SeatLayout newRound(SeatLayout layout, String pref) {
         char[][] grid = layout.getLayout();
         char[][] newGrid = new char[grid.length][grid[0].length];
         String[] temp = new String[grid.length];
@@ -90,9 +90,101 @@ public class Day11 {
             }
             temp[i] = temp2.toString();
             temp2.setLength(0);
-            System.out.println(temp[i]);
+            //System.out.println(temp[i]);
         }
-        System.out.println("?????????????????????????????????????????????????????????????????????????????????????????");
-        return new SeatLayout_Day11(temp);
+        return new SeatLayout(temp);
+    }
+
+
+    private static class SeatLayout {
+        private final static int[][] OFFSETS = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+
+        private final char[][] layout;
+        private int occupiedSeats;
+
+        public SeatLayout(String[] input) {
+            occupiedSeats = 0;
+            layout = new char[input.length][input[0].length()];
+            setLayout(input);
+        }
+
+        public void setLayout(String[] input) {
+            for (int i = 0; i < input.length; i++) {
+                for (int j = 0; j < input[i].length(); j++) {
+                    layout[i][j] = input[i].charAt(j);
+                }
+            }
+        }
+
+        public char[][] getLayout() {
+            return layout;
+        }
+
+        public void showLayout() {
+            for (char[] chars : layout) {
+                System.out.println(chars);
+            }
+        }
+
+        public void seatOccupied() {
+            occupiedSeats++;
+        }
+
+        public int getOccupiedSeats() {
+            return occupiedSeats;
+        }
+
+        public int countAdjacent(int x, int y) {
+            int count = 0;
+            for (int[] offset : OFFSETS) {
+                int row = x + offset[0];
+                int col = y + offset[1];
+                if (row < 0 || row >= layout.length || col < 0 || col >= layout[x].length) {
+                    continue;
+                }
+                if (layout[row][col] == '#') {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public int countVisible(int x, int y) {
+            int count = 0;
+            for (int[] offset : OFFSETS) {
+                int row = x;
+                int col = y;
+                while (true) {
+                    row += offset[0];
+                    col += offset[1];
+                    if (row < 0 || row >= layout.length || col < 0 || col >= layout[x].length) {
+                        break;
+                    }
+                    if (layout[row][col] == 'L') {
+                        break;
+                    }
+                    if (layout[row][col] == '#') {
+                        count++;
+                        break;
+                    }
+                }
+            }
+            return count;
+        }
+
+        public int countOccupied(int x, int y, String pref) {
+            int count = 0;
+            switch (pref) {
+                case "adjacent":
+                    count = countAdjacent(x, y);
+                    break;
+                case "visible":
+                    count = countVisible(x, y);
+                    break;
+                default:
+                    System.out.println("Invalid preference.");
+            }
+            return count;
+        }
     }
 }

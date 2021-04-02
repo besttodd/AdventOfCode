@@ -60,7 +60,7 @@ public class Day14 {
             } else {
                 long memoryIndex = Integer.parseInt(s.substring(s.indexOf("[") + 1, s.indexOf("]")));
                 memory.put(memoryIndex, addMask(mask, binaryValue(getMemoryValue(s))));
-                System.out.println(memory);
+                //System.out.println(memory);
             }
         }
 
@@ -109,7 +109,6 @@ public class Day14 {
         //Get the variations for X's
         long[] indexes = new long[(int) Math.pow(2, numXs(result))];
         int count = 0;
-        System.out.println(Math.pow(2, numXs(result)));
         while (count < Math.pow(2, numXs(result))) {
             indexes[count] = nextVariation(result.toCharArray(), count, xIndexes);
             count++;
@@ -125,7 +124,7 @@ public class Day14 {
         for (char tempBit : tempBits) {
             binaryIndex[indexIt.next()] = tempBit;
         }
-        System.out.println(binaryIndex);
+        //System.out.println(binaryIndex);
         return Long.parseLong(new String(binaryIndex), 2);
     }
 
@@ -136,7 +135,6 @@ public class Day14 {
                 count++;
             }
         }
-        System.out.println("Num of X's: " + count);
         return count;
     }
 
@@ -153,7 +151,7 @@ public class Day14 {
     private String binaryValue(int value) {
         String binary = Integer.toBinaryString(value);
         binary = String.format("%36s", binary).replaceAll(" ", "0");
-        System.out.println(value + " = " + binary);
+        //System.out.println(value + " = " + binary);
         return binary;
     }
 

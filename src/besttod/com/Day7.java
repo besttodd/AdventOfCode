@@ -37,12 +37,12 @@ public class Day7 {
         containShinyGold.clear();
         System.out.println("=========================================================================================");
 
-        List<Bag_Day7> allBags = new ArrayList<>();
+        List<Bag> allBags = new ArrayList<>();
         for (String s : input) {
-            allBags.add(new Bag_Day7(s));
+            allBags.add(new Bag(s));
         }
 
-        for (Bag_Day7 bag : allBags) {
+        for (Bag bag : allBags) {
             if (bag.getColor().equals("shiny gold")) {
                 System.out.println("\nNumber of bags inside a 'Shiny Gold Bag': " + (bag.containsNumOfBags(allBags) - 1));
                 break;
@@ -71,5 +71,62 @@ public class Day7 {
             chunks.add(matcher.group());
         }
         return chunks;
+    }
+
+    public static class Bag {
+
+        private final String color;
+        private final Map<String, Integer> contents = new HashMap<>();
+
+        public Bag(String rule) {
+            List<String> bagNContents = parse(rule);
+            color = bagNContents.get(0) + " " + bagNContents.get(1);
+            extractContents(rule, color);
+        }
+
+        private List<String> parse(String toParse) {
+            List<String> chunks = new LinkedList<>();
+            Matcher matcher = VALID_PATTERN.matcher(toParse);
+            while (matcher.find()) {
+                chunks.add(matcher.group());
+            }
+            return chunks;
+        }
+
+        private void extractContents(String s, String search) {
+            List<String> bagNContents = parse(s);
+            if (color.equals(search)) {
+                for (int i = 4; i < bagNContents.size(); i = i + 4) {
+                    if (!bagNContents.get(i).equals("no")) {
+                        String insideBag = bagNContents.get(i + 1) + " " + bagNContents.get(i + 2);
+                        int numBags = Integer.parseInt(bagNContents.get(i));
+                        contents.put(insideBag, numBags);
+                    }
+                }
+            }
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        private Bag findBag(List<Bag> allBags, String color) {
+            for (Bag bag : allBags) {
+                if (bag.getColor().equals(color)) {
+                    return bag;
+                }
+            }
+            return null;
+        }
+
+        public long containsNumOfBags(List<Bag> allBags) {
+            long numBags = 1;
+            for (Map.Entry<String, Integer> bag : contents.entrySet()) {
+                Bag foundBag = findBag(allBags, bag.getKey());
+                assert foundBag != null;
+                numBags += bag.getValue() * foundBag.containsNumOfBags(allBags);
+            }
+            return numBags;
+        }
     }
 }
