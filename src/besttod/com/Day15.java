@@ -66,43 +66,42 @@ public class Day15 {
         InputStreamReader reader = new InputStreamReader(System.in);
         BufferedReader in = new BufferedReader(reader);
         String input;
-        int[] startNums = new int[0];
-        System.out.println("Enter a comma separated list of numbers or 'Q' to quit:");
+        int[] startNums;
         while (true) {
+            System.out.println("Enter a comma separated list of numbers:");
             try {
                 if ((input = in.readLine()).toUpperCase(Locale.ROOT).equals("Q")) break;
                 String[] temp = input.split(",");
                 startNums = Arrays.stream(temp).mapToInt(Integer::parseInt).toArray();
+
+                Map<Integer, Integer> sequence = new HashMap<>();
+                int last = -1;
+                int turn = 1;
+                for (int i : startNums) {
+                    if (last != -1) {
+                        sequence.put(last, turn);
+                    }
+                    last = i;
+                    turn++;
+                }
+
+                while (turn != TARGET_PART_A) {
+                    int next = 0;
+                    if (sequence.containsKey(last)) {
+                        next = turn - sequence.get(last);
+                    }
+                    sequence.put(last, turn);
+                    last = next;
+                    turn++;
+                    //System.out.println(sequence);
+                }
+                System.out.println("Part A: " + last + "\nNext list or 'Q' to quit.");
             } catch (IOException e) {
                 System.out.println("Invalid input.");
                 e.printStackTrace();
             } catch (NumberFormatException n) {
                 System.out.println("Invalid input.");
             }
-
-            Map<Integer, Integer> sequence = new HashMap<>();
-            int last = -1;
-            int turn = 1;
-            for (int i : startNums) {
-                if (last != -1) {
-                    sequence.put(last, turn);
-                }
-                last = i;
-                turn++;
-            }
-
-            while (turn != TARGET_PART_B) {
-                int next = 0;
-                if (sequence.containsKey(last)) {
-                    next = turn - sequence.get(last);
-                }
-                sequence.put(last, turn);
-                last = next;
-                turn++;
-                //System.out.println(sequence);
-            }
-            System.out.println("Part A: " + last);
         }
-
     }
 }

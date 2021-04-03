@@ -5,8 +5,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
-        new Day15();
+        new Day16();
 
         /*Scanner userinput = new Scanner(System.in);
         int day = -1;
@@ -63,6 +62,9 @@ public class Main {
                     break;
                 case 15:
                     new Day15();
+                    break;
+                case 16:
+                    new Day16();
                     break;
                 default:
                     System.out.println("Invalid input");
