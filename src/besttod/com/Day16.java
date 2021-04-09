@@ -28,7 +28,7 @@ Once you work out which field is which, look for the six fields on your ticket t
 What do you get if you multiply those six values together?
 
 Incorrect answers: 560
-Correct answer:
+Correct answer: 453459307723
 */
 
 import java.io.*;
@@ -78,7 +78,6 @@ public class Day16 {
                 }
             }
             br.close();
-            List<String> possibleRanges = new ArrayList<>();
             String[] rangeKey = new String[myTicket.length];
             List<int[]> validTickets = new ArrayList<>();
             for (int[] ticket : nearbyTickets) {
@@ -96,7 +95,7 @@ public class Day16 {
                 }
                 invalidValues.addAll(temp);
             }
-            System.out.println("Invalid Values: " + invalidValues);
+            //System.out.println("Invalid Values: " + invalidValues);
             System.out.println("\nPart A\nError Rate: " + invalidValues.stream().mapToInt(i -> i).sum());
 
 
@@ -105,23 +104,19 @@ public class Day16 {
             while (Arrays.asList(rangeKey).contains(null)) {
                 for (int position = 0; position < myTicket.length; position++) {
                     for (Map.Entry<String, Field> entry : ranges.entrySet()) {
-                        for (int ticket = 0; ticket < validTickets.size(); ticket++) {
-                            //System.out.println(ticket + ":" + position);
-                            if (!entry.getValue().isInRange(validTickets.get(ticket)[position])) {
+                        for (int[] validTicket : validTickets) {
+                            if (!entry.getValue().isInRange(validTicket[position])) {
                                 invalidRanges.add(entry.getKey());
-                                System.out.println(ticket + ":" + position + ":" + invalidRanges);
+                                //System.out.println(ticket + ":" + position + ":" + invalidRanges);
                                 break;
                             }
 
                         }
-
-                        System.out.println("==");
                     }
                     temp.removeAll(invalidRanges);
                     if (temp.size() == 1) {
                         rangeKey[position] = temp.get(0);
                     }
-                    System.out.println(Arrays.toString(rangeKey));
                     temp.clear();
                     temp.addAll(rangeLabels);
                     for (String s : rangeKey) {
@@ -130,7 +125,8 @@ public class Day16 {
                     invalidRanges.clear();
                 }
             }
-
+            System.out.println("\nPart B:");
+            System.out.println(Arrays.toString(rangeKey));
             System.out.println(calculatePartB(rangeKey, myTicket));
         } catch (FileNotFoundException e) {
             System.out.println("File not found!");
@@ -139,12 +135,11 @@ public class Day16 {
         }
     }
 
-    private int calculatePartB(String[] rangeKey, int[] myTicket) {
-        int answer = 0;
+    private long calculatePartB(String[] rangeKey, int[] myTicket) {
+        long answer = 1;
         for (int z = 0; z < rangeKey.length; z++) {
             if (rangeKey[z].contains("departure")) {
-                System.out.println(rangeKey[z] + ":" + z);
-                answer += myTicket[z];
+                answer *= myTicket[z];
             }
         }
         return answer;
